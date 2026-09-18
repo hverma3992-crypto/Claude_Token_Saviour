@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "token-saviour": {
+      "command": "python",
+      "args": ["-m", "token_saviour.mcp_server"],
+      "env": {
+        "ANTHROPIC_API_KEY": "your-api-key-here"
+      }
+    }
+  }
+}

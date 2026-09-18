@@ -1,0 +1,53 @@
+# Claude Token Saviour — Global Instructions
+#
+# Copy this file to make the token-saving rules active across ALL your projects:
+#
+# Claude Code:
+#   Linux/macOS: ~/.claude/CLAUDE.md
+#   Windows:     %USERPROFILE%\.claude\CLAUDE.md
+#
+# Antigravity IDE:
+#   Copy the .agents/skills/claude-token-saviour/ folder to ~/.gemini/config/skills/
+#
+# Claude Desktop:
+#   Add to Settings → Custom Instructions, OR
+#   Upload to Project Knowledge
+
+## Model Routing Rules
+
+Always select the cheapest Claude model capable of handling the task:
+
+### SIMPLE → Haiku 3.5 ($0.80/$4.00 per 1M tokens) — saves ~94% vs Opus
+- Typo/spelling/grammar fixes
+- Format/convert data (JSON ↔ YAML ↔ CSV)
+- Generate boilerplate code
+- Rename variables, sort imports
+- Simple lookups and definitions
+- Generate mock/test data
+- Add comments or docstrings
+
+### MODERATE → Sonnet 4 ($3.00/$15.00 per 1M tokens) — saves ~80% vs Opus
+- Write unit tests
+- Code review and bug identification
+- Explain complex code
+- Refactor functions/classes
+- Write documentation
+- Implement API endpoints
+- Debug with error messages
+- Standard feature implementation
+
+### COMPLEX → Opus 4 ($15.00/$75.00 per 1M tokens) — baseline
+- System architecture design
+- Complex algorithms
+- Security vulnerability analysis
+- Multi-file refactoring
+- Performance optimization strategy
+- Design pattern recommendations
+- Novel problem-solving
+
+## Token-Saving Practices
+1. Only include relevant code context, not entire files
+2. Set appropriate max_tokens for the task type
+3. Request structured output (JSON) over verbose prose
+4. Batch related small questions into one prompt
+5. Use concise system prompts

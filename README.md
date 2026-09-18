@@ -4,11 +4,14 @@
   <img src="https://img.shields.io/badge/python-3.9+-blue.svg" alt="Python 3.9+">
   <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="MIT License">
   <img src="https://img.shields.io/badge/claude-haiku%20%7C%20sonnet%20%7C%20opus-purple.svg" alt="Claude Models">
-  <img src="https://img.shields.io/github/workflow/status/verma/Claude_Token_Saviour/CI?label=CI" alt="CI Status">
 </p>
 
 <p align="center">
   <strong>Automatically route Claude API requests to the cheapest suitable model — save up to 18× on token costs.</strong>
+</p>
+
+<p align="center">
+  Works with <b>Claude Code</b> · <b>Claude Desktop</b> · <b>Antigravity IDE</b>
 </p>
 
 ---
@@ -40,13 +43,72 @@ Claude Token Saviour analyzes your prompts in real-time, classifies their comple
 
 ---
 
+## 🔌 Platform Support
+
+### Claude Code (CLI)
+
+Claude Code automatically reads the `CLAUDE.md` file from your project root. Token Saviour's rules are loaded on every interaction.
+
+**Project-level** (this repo only):
+```bash
+cd Claude_Token_Saviour
+claude  # Rules auto-loaded from CLAUDE.md
+```
+
+**Global** (all projects):
+```bash
+# Linux/macOS
+cp claude_code/CLAUDE.md.global ~/.claude/CLAUDE.md
+
+# Windows
+Copy-Item "claude_code\CLAUDE.md.global" "$env:USERPROFILE\.claude\CLAUDE.md"
+```
+
+📖 Full guide: [`claude_code/SETUP_GUIDE.md`](claude_code/SETUP_GUIDE.md)
+
+---
+
+### Claude Desktop (GUI)
+
+Integrates via the **Model Context Protocol (MCP)** as a tool server.
+
+Add to your `claude_desktop_config.json`:
+```json
+{
+  "mcpServers": {
+    "token-saviour": {
+      "command": "python",
+      "args": ["-m", "token_saviour.mcp_server"]
+    }
+  }
+}
+```
+
+This gives Claude Desktop access to tools like `classify_prompt`, `optimize_prompt`, `get_usage_report`, and more.
+
+📖 Full guide: [`claude_desktop/SETUP_GUIDE.md`](claude_desktop/SETUP_GUIDE.md)
+
+---
+
+### Antigravity IDE
+
+Loads as a skill from `.agents/skills/claude-token-saviour/`:
+
+- Automatically picked up when Antigravity opens this workspace
+- Teaches the agent task classification, model routing, and prompt optimization
+- Includes detailed reference docs in `references/`
+
+To use globally, copy the skill folder to `~/.gemini/config/skills/`.
+
+---
+
 ## 🚀 Quick Start
 
 ### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/verma/Claude_Token_Saviour.git
+git clone https://github.com/hverma3992-crypto/Claude_Token_Saviour.git
 cd Claude_Token_Saviour
 
 # Install dependencies
@@ -101,6 +163,9 @@ python -m token_saviour report
 
 # Show current config
 python -m token_saviour config
+
+# Optimize a prompt
+python -m token_saviour optimize "your verbose prompt here"
 ```
 
 ---
@@ -124,17 +189,6 @@ budget:
   daily_limit_usd: 10.00
   alert_threshold_pct: 80
 ```
-
----
-
-## 🔌 Antigravity Skill
-
-This repo includes an Antigravity IDE skill in `.agents/skills/claude-token-saviour/`. When loaded, it teaches the agent to:
-
-- Automatically pick the cheapest model for each sub-task
-- Compress prompts to reduce token count
-- Batch related requests
-- Track and report savings
 
 ---
 
@@ -166,9 +220,20 @@ python -m pytest tests/ --cov=token_saviour
 
 ```
 Claude_Token_Saviour/
-├── .agents/skills/claude-token-saviour/   # Antigravity skill
+├── CLAUDE.md                              # 🔵 Claude Code — auto-loaded instructions
+├── .claude/commands/                      # 🔵 Claude Code — slash commands
+│   └── token-saviour.md
+├── claude_code/                           # 🔵 Claude Code — setup guide & global config
+│   ├── SETUP_GUIDE.md
+│   └── CLAUDE.md.global
+├── claude_desktop/                        # 🟣 Claude Desktop — MCP integration
+│   ├── SETUP_GUIDE.md
+│   └── claude_desktop_config.example.json
+├── .agents/skills/claude-token-saviour/   # 🟢 Antigravity IDE — skill
 │   ├── SKILL.md
 │   └── references/
+│       ├── model_guide.md
+│       └── prompt_optimization.md
 ├── token_saviour/                         # Python package
 │   ├── __init__.py
 │   ├── classifier.py                      # Task complexity classifier
@@ -176,9 +241,10 @@ Claude_Token_Saviour/
 │   ├── tracker.py                         # Usage & savings tracker
 │   ├── optimizer.py                       # Prompt optimization
 │   ├── config.py                          # Configuration loader
-│   └── cli.py                             # CLI interface
+│   ├── cli.py                             # CLI interface
+│   └── mcp_server.py                      # MCP server for Claude Desktop
 ├── examples/                              # Usage examples
-├── tests/                                 # Test suite
+├── tests/                                 # Test suite (62 tests)
 ├── config.yaml                            # Default configuration
 ├── setup.py                               # Package metadata
 └── requirements.txt                       # Dependencies
